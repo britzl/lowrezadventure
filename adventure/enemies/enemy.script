@@ -1,0 +1,64 @@
+local platypus = require "platypus.platypus"
+local animator = require "adventure.animator"
+
+go.property("awake", false)
+go.property("speed", 20)
+go.property("type", hash("goblin"))
+
+
+local TRIGGER_RESPONSE = hash("trigger_response")
+local COLLISION_RESPONSE = hash("collision_response")
+
+local ATTACK = hash("attack")
+
+local types = {
+	[hash("goblin")] = {
+		
+	},
+}
+
+function init(self)
+	self.platformer = platypus.create({
+		collisions = {
+			ground = { hash("ground") },
+			left = 3, right = 4, top = 3, bottom = 5,
+		},
+		gravity = -800,
+		max_velocity = 600
+	})
+	self.animator = animator.create("#sprite", hash("goblin_idle"))
+end
+
+function update(self, dt)
+	if self.awake then
+		local player_pos = go.get_world_position("player")
+		local my_pos = go.get_world_position()
+		if my_pos.x > player_pos.x then
+			sprite.set_hflip("#sprite", true)
+			self.platformer.left(self.speed)
+			self.animator.play(hash("goblin_walk"))
+		elseif my_pos.x < player_pos.x then
+			sprite.set_hflip("#sprite", false)
+			self.platformer.right(self.speed)
+			self.animator.play(hash("goblin_walk"))
+		else
+			--self.platformer.stop()
+		end
+	end
+	self.platformer.update(dt)
+end
+
+function on_message(self, message_id, message, sender)
+	self.platformer.on_message(message_id, message, sender)
+	if message_id == TRIGGER_RESPONSE then
+		if not self.awake then
+			self.awake = true
+			print("awake")
+		end
+	elseif message_id == COLLISION_RESPONSE then
+		if message.other_group == ATTACK then
+			print("attack")
+			go.delete()
+		end
+	end
+end

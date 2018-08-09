@@ -1,0 +1,119 @@
+local camera = require "orthographic.camera"
+local platypus = require "platypus.platypus"
+local input = require "in.state"
+local input_mapper = require "in.mapper"
+local animator = require "adventure.animator"
+
+local CAMERA = hash("/camera")
+
+local LEFT = hash("left")
+local RIGHT = hash("right")
+local ATTACK = hash("attack")
+local JUMP = hash("jump")
+
+local DEBUG = hash("debug")
+
+local SPEED_GROUND = 50
+local SPEED_AIR = 40
+local SPEED_JUMP = 175
+
+local function lerp_with_dt(t, dt, v1, v2)
+	return vmath.lerp(1 - math.pow(t, dt), v1, v2)
+end
+
+function init(self)
+	input.acquire()
+	input_mapper.bind(input_mapper.KEY_LEFT, LEFT)
+	input_mapper.bind(input_mapper.KEY_RIGHT, RIGHT)
+	input_mapper.bind(input_mapper.KEY_SPACE, JUMP)
+	input_mapper.bind(input_mapper.KEY_X, ATTACK)
+	input_mapper.bind(input_mapper.KEY_1, DEBUG)
+	self.platypus = platypus.create({
+		collisions = {
+			ground = { hash("ground") },
+			left = 3, right = 4, top = 3, bottom = 5,
+		},
+		--debug = true,
+		gravity = -800,
+		max_velocity = 600
+	})
+	self.animator = animator.create("#sprite", hash("warrior_idle"))
+	self.camera_offset = vmath.vector3()
+	self.camera_offset_lerp = vmath.vector3()
+	self.attack_direction = "#attack_right"
+	msg.post("#attack_left", "disable")
+	msg.post("#attack_right", "disable")
+end
+
+function update(self, dt)
+	if input.is_pressed(ATTACK) and not self.attacking then
+		self.attacking = true
+		self.platypus.velocity.x = 0
+		msg.post(self.attack_direction, "enable")
+		self.animator.play_now(hash("warrior_attack"), function()
+			self.attacking = false
+			msg.post(self.attack_direction, "disable")
+		end)
+	end
+
+	if not self.attacking then
+		local ground_contact = self.platypus.has_ground_contact()
+		if input.is_pressed(LEFT) then
+			self.platypus.left(ground_contact and SPEED_GROUND or SPEED_AIR)
+			self.animator.play(ground_contact and hash("warrior_walk") or hash("warrior_block"))
+			sprite.set_hflip("#sprite", true)
+			self.camera_offset_lerp.x = -16
+			self.attack_direction = "#attack_left"
+		elseif input.is_pressed(RIGHT) then
+			self.platypus.right(ground_contact and SPEED_GROUND or SPEED_AIR)
+			self.animator.play(ground_contact and hash("warrior_walk") or hash("warrior_block"))
+			sprite.set_hflip("#sprite", false)
+			self.camera_offset_lerp.x = 16
+			self.attack_direction = "#attack_right"
+		else
+			self.animator.play(ground_contact and hash("warrior_idle") or hash("warrior_block"))
+		end
+	end
+	
+	if self.platypus.is_jumping() then
+		self.camera_offset_lerp.y = 16
+	elseif self.platypus.is_falling() then
+		self.camera_offset_lerp.y = 0
+	end
+	
+	self.camera_offset = lerp_with_dt(0.01, dt, self.camera_offset, self.camera_offset_lerp)
+
+	camera.follow(CAMERA, go.get_id(), 0.001, self.camera_offset)
+	self.platypus.update(dt)
+end
+
+function on_message(self, message_id, message, sender)
+	self.platypus.on_message(message_id, message, sender)
+	if message_id == platypus.GROUND_CONTACT then
+		print("Ground contact")
+	elseif message_id == platypus.WALL_CONTACT then
+		print("Wall contact")
+	elseif message_id == platypus.FALLING then
+		print("Falling")
+	end
+end
+
+function on_input(self, action_id, action)
+	action_id = input_mapper.on_input(action_id)
+	input.on_input(action_id, action)
+	if action_id == JUMP then
+		if action.pressed then
+			self.platypus.jump(SPEED_JUMP, true, true)
+		elseif action.released then
+			self.platypus.abort_jump()
+		end
+	elseif action_id == DEBUG and action.released then
+		self.platypus.toggle_debug()
+		msg.post("@system:", "toggle_physics_debug")
+	end
+end
+
+function on_reload(self)
+    -- Add reload-handling code here
+    -- Remove this function if not needed
+end

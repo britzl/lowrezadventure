@@ -1,0 +1,156 @@
+animations {
+  id: "torch"
+  images {
+    image: "/assets/images/torch1.png"
+  }
+  images {
+    image: "/assets/images/torch2.png"
+  }
+  images {
+    image: "/assets/images/torch3.png"
+  }
+  images {
+    image: "/assets/images/torch4.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "warrior_walk"
+  images {
+    image: "/assets/images/warrior1.png"
+  }
+  images {
+    image: "/assets/images/warrior2.png"
+  }
+  images {
+    image: "/assets/images/warrior3.png"
+  }
+  images {
+    image: "/assets/images/warrior4.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 10
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "gold"
+  images {
+    image: "/assets/images/gold pile1.png"
+  }
+  images {
+    image: "/assets/images/gold pile2.png"
+  }
+  images {
+    image: "/assets/images/gold pile3.png"
+  }
+  images {
+    image: "/assets/images/gold pile4.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "goblin_walk"
+  images {
+    image: "/assets/images/goblin1.png"
+  }
+  images {
+    image: "/assets/images/goblin2.png"
+  }
+  images {
+    image: "/assets/images/goblin3.png"
+  }
+  images {
+    image: "/assets/images/goblin4.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "goblin_attack"
+  images {
+    image: "/assets/images/goblin5.png"
+  }
+  images {
+    image: "/assets/images/goblin6.png"
+  }
+  images {
+    image: "/assets/images/goblin7.png"
+  }
+  images {
+    image: "/assets/images/goblin8.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 20
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "warrior_attack"
+  images {
+    image: "/assets/images/warrior5.png"
+  }
+  images {
+    image: "/assets/images/warrior6.png"
+  }
+  images {
+    image: "/assets/images/warrior7.png"
+  }
+  images {
+    image: "/assets/images/warrior8.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 12
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "warrior_block"
+  images {
+    image: "/assets/images/warrior9.png"
+  }
+  images {
+    image: "/assets/images/warrior10.png"
+  }
+  images {
+    image: "/assets/images/warrior11.png"
+  }
+  images {
+    image: "/assets/images/warrior12.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 12
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "warrior_idle"
+  images {
+    image: "/assets/images/warrior1.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 60
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "goblin_idle"
+  images {
+    image: "/assets/images/goblin1.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 10
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+margin: 0
+extrude_borders: 0
+inner_padding: 0
