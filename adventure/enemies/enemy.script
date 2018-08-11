@@ -1,64 +1,160 @@
 local platypus = require "platypus.platypus"
 local animator = require "adventure.animator"
+local shared = require "adventure.shared"
+local log = require "utils.log"
 
 go.property("awake", false)
 go.property("speed", 20)
+go.property("health", 2)
 go.property("type", hash("goblin"))
-
+go.property("log_enabled", false)
 
 local TRIGGER_RESPONSE = hash("trigger_response")
 local COLLISION_RESPONSE = hash("collision_response")
+local CONTACT_POINT_RESPONSE = hash("contact_point_response")
+
+local GROUP_DANGER = hash("danger")
+local GROUP_GROUND = hash("ground")
 
 local ATTACK = hash("attack")
 
-local types = {
+local ANIM_WALK = hash("walk")
+local ANIM_IDLE = hash("idle")
+local ANIM_ATTACK = hash("attack")
+
+local TYPES = {
 	[hash("goblin")] = {
-		
+		animations = {
+			[ANIM_IDLE] = hash("goblin_idle"),
+			[ANIM_WALK] = hash("goblin_walk"),
+			[ANIM_ATTACK] = hash("goblin_attack"),
+		},
+		attack = {
+			distance = 12,
+			speed = 0.75,
+		},
+	},
+	[hash("slime")] = {
+		animations = {
+			[ANIM_IDLE] = hash("slime_walk"),
+			[ANIM_WALK] = hash("slime_walk"),
+			[ANIM_ATTACK] = hash("slime_attack"),
+		},
+		attack = {
+			distance = 8,
+			speed = 0.75,
+		},
+	},
+	[hash("bat")] = {
+		animations = {
+			[ANIM_IDLE] = hash("bat_fly"),
+			[ANIM_WALK] = hash("bat_fly"),
+			[ANIM_ATTACK] = hash("bat_attack"),
+		},
+		attack = {
+			distance = 8,
+			speed = 0.75,
+		},
+		flying = true,
 	},
 }
 
 function init(self)
-	self.platformer = platypus.create({
+	print("log enabled", self.log_enabled)
+	log.set_enabled(self.log_enabled)
+	log("init()")
+	
+	local data = TYPES[self.type]
+	self.animations = data.animations
+	self.attack = data.attack
+	self.animator = animator.create("#sprite", self.animations)
+
+	self.platypus = platypus.create({
 		collisions = {
-			ground = { hash("ground") },
-			left = 3, right = 4, top = 3, bottom = 5,
+			ground = { GROUP_GROUND },
+			left = 3, right = 4, top = 3, bottom = 4,
 		},
-		gravity = -800,
-		max_velocity = 600
+		gravity = data.flying and 0 or -800,
+		max_velocity = 600,
+		separation = platypus.SEPARATION_RAYS,
 	})
-	self.animator = animator.create("#sprite", hash("goblin_idle"))
+	self.awake = false
+	self.enabled = true
 end
 
+local function follow(self)
+end
+
+local function swoop(self)
+	local player_pos = go.get_world_position("player")
+	local my_pos = go.get_world_position()
+	local distance = my_pos - player_pos
+	if distance.x > 0 then
+	end
+end
+
+
 function update(self, dt)
-	if self.awake then
+	if self.awake and self.enabled and not self.attacking then
 		local player_pos = go.get_world_position("player")
 		local my_pos = go.get_world_position()
-		if my_pos.x > player_pos.x then
+		local distance = my_pos - player_pos
+		if distance.x > 0 then
 			sprite.set_hflip("#sprite", true)
-			self.platformer.left(self.speed)
-			self.animator.play(hash("goblin_walk"))
-		elseif my_pos.x < player_pos.x then
+			self.platypus.left(self.speed)
+			self.animator.play(ANIM_WALK)
+			self.attack_direction = "#attack_left"			
+		elseif distance.x < 0 then
 			sprite.set_hflip("#sprite", false)
-			self.platformer.right(self.speed)
-			self.animator.play(hash("goblin_walk"))
-		else
-			--self.platformer.stop()
+			self.platypus.right(self.speed)
+			self.animator.play(ANIM_WALK)
+			self.attack_direction = "#attack_right"
+		end
+
+		if vmath.length(distance) < self.attack.distance then
+			log("attack")
+			self.attacking = true
+			timer.delay(self.attack.speed, false, function()
+				msg.post(self.attack_direction, "enable")
+				self.animator.play_now(ANIM_ATTACK, function()
+					self.attacking = false
+					msg.post(self.attack_direction, "disable")
+				end)
+			end)
 		end
 	end
-	self.platformer.update(dt)
+	self.platypus.update(dt)
+end
+
+local function die(self)
+	log("die")
+	self.enabled = false
+	msg.post("#hitbox", "disable")
+	sprite.play_flipbook("#sprite", hash("explosion"), function()
+		go.delete()
+	end)
 end
 
 function on_message(self, message_id, message, sender)
-	self.platformer.on_message(message_id, message, sender)
+	self.platypus.on_message(message_id, message, sender)
 	if message_id == TRIGGER_RESPONSE then
-		if not self.awake then
+		if message.enter then
+			log("awake")
 			self.awake = true
-			print("awake")
 		end
 	elseif message_id == COLLISION_RESPONSE then
+		if message.other_group == GROUP_DANGER then
+			die(self)
+		end
+	elseif message_id == CONTACT_POINT_RESPONSE then
 		if message.other_group == ATTACK then
-			print("attack")
-			go.delete()
+			log("ouch")
+			self.health = self.health - 1
+			if self.health == 0 then
+				die(self)
+			else
+				shared.take_damage(self, message)
+			end
 		end
 	end
 end

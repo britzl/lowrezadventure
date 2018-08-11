@@ -1,7 +1,7 @@
 [project]
 title = Lowrez Adventure
 version = 1.0
-dependencies = https://github.com/britzl/lowrezjam-template/archive/master.zip,https://github.com/britzl/defold-orthographic/archive/2.3.1.zip,https://github.com/britzl/defold-input/archive/1.3.0.zip,https://github.com/britzl/platypus/archive/2.1.0.zip
+dependencies = https://github.com/britzl/lowrezjam-template/archive/master.zip,https://github.com/britzl/defold-orthographic/archive/2.3.1.zip,https://github.com/britzl/defold-input/archive/1.3.0.zip,https://github.com/britzl/platypus/archive/2.1.0.zip,https://github.com/britzl/ludobits/archive/6.0.0.zip
 custom_resources = 
 
 [bootstrap]

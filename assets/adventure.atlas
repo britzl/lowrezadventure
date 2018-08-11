@@ -151,6 +151,98 @@ animations {
   flip_horizontal: 0
   flip_vertical: 0
 }
+animations {
+  id: "explosion"
+  images {
+    image: "/assets/images/explosion1.png"
+  }
+  images {
+    image: "/assets/images/explosion2.png"
+  }
+  images {
+    image: "/assets/images/explosion3.png"
+  }
+  images {
+    image: "/assets/images/explosion4.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 20
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "slime_walk"
+  images {
+    image: "/assets/images/slime1.png"
+  }
+  images {
+    image: "/assets/images/slime2.png"
+  }
+  images {
+    image: "/assets/images/slime3.png"
+  }
+  images {
+    image: "/assets/images/slime4.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "slime_attack"
+  images {
+    image: "/assets/images/slime1.png"
+  }
+  images {
+    image: "/assets/images/slime2.png"
+  }
+  images {
+    image: "/assets/images/slime3.png"
+  }
+  images {
+    image: "/assets/images/slime4.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 10
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "lava"
+  images {
+    image: "/assets/images/lava1.png"
+  }
+  images {
+    image: "/assets/images/lava2.png"
+  }
+  images {
+    image: "/assets/images/lava3.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "bat_fly"
+  images {
+    image: "/assets/images/bat1.png"
+  }
+  images {
+    image: "/assets/images/bat2.png"
+  }
+  images {
+    image: "/assets/images/bat3.png"
+  }
+  images {
+    image: "/assets/images/bat2.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+  flip_horizontal: 0
+  flip_vertical: 0
+}
 margin: 0
 extrude_borders: 0
 inner_padding: 0

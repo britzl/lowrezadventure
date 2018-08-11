@@ -23,8 +23,8 @@ instances {
   id: "player"
   prototype: "/adventure/player/player.go"
   position {
-    x: 29.0
-    y: 29.0
+    x: 32.0
+    y: 184.0
     z: 0.0
   }
   rotation {
@@ -43,8 +43,8 @@ instances {
   id: "camera"
   prototype: "/orthographic/camera.go"
   position {
-    x: 0.0
-    y: 0.0
+    x: 432.0
+    y: 23.0
     z: 0.0
   }
   rotation {
@@ -55,6 +55,16 @@ instances {
   }
   component_properties {
     id: "script"
+    properties {
+      id: "near_z"
+      value: "-10.0"
+      type: PROPERTY_TYPE_NUMBER
+    }
+    properties {
+      id: "far_z"
+      value: "10.0"
+      type: PROPERTY_TYPE_NUMBER
+    }
     properties {
       id: "projection"
       value: "FIXED_ZOOM"
@@ -83,11 +93,11 @@ instances {
   }
 }
 instances {
-  id: "torch2"
-  prototype: "/adventure/props/torch.go"
+  id: "goblin"
+  prototype: "/adventure/enemies/goblin.go"
   position {
-    x: 93.0
-    y: 32.0
+    x: 312.0
+    y: -106.0
     z: 0.0
   }
   rotation {
@@ -95,6 +105,14 @@ instances {
     y: 0.0
     z: 0.0
     w: 1.0
+  }
+  component_properties {
+    id: "enemy"
+    properties {
+      id: "log_enabled"
+      value: "true"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
   }
   scale3 {
     x: 1.0
@@ -106,8 +124,8 @@ instances {
   id: "torch1"
   prototype: "/adventure/props/torch.go"
   position {
-    x: 51.0
-    y: 32.0
+    x: 311.0
+    y: -72.0
     z: 0.0
   }
   rotation {
@@ -123,11 +141,339 @@ instances {
   }
 }
 instances {
-  id: "goblin"
-  prototype: "/adventure/enemies/goblin.go"
+  id: "lava1"
+  prototype: "/adventure/props/lava.go"
   position {
-    x: 151.0
-    y: 25.0
+    x: 424.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava2"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 440.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava3"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 472.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava4"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 504.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava5"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 520.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava6"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 552.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava7"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 392.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "slime"
+  prototype: "/adventure/enemies/slime.go"
+  position {
+    x: 87.0
+    y: 5.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "enemy"
+    properties {
+      id: "speed"
+      value: "10.0"
+      type: PROPERTY_TYPE_NUMBER
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 680.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava8"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 648.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava9"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 632.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava10"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 664.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava11"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 696.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava12"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 712.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava13"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 728.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava14"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 744.0
+    y: -120.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lava15"
+  prototype: "/adventure/props/lava.go"
+  position {
+    x: 760.0
+    y: -120.0
     z: 0.0
   }
   rotation {
@@ -145,15 +491,16 @@ instances {
 scale_along_z: 0
 embedded_instances {
   id: "map"
-  children: "torch1"
-  children: "torch2"
+  children: "enemies"
+  children: "props"
+  children: "terrain"
   data: "components {\n"
   "  id: \"level1\"\n"
   "  component: \"/adventure/level1.tilemap\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
-  "    z: 0.0\n"
+  "    z: -1.0\n"
   "  }\n"
   "  rotation {\n"
   "    x: 0.0\n"
@@ -205,6 +552,85 @@ embedded_instances {
   "  }\n"
   "}\n"
   ""
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+embedded_instances {
+  id: "enemies"
+  children: "goblin"
+  children: "slime"
+  data: ""
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+embedded_instances {
+  id: "props"
+  children: "torch1"
+  data: ""
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+embedded_instances {
+  id: "terrain"
+  children: "lava"
+  children: "lava1"
+  children: "lava10"
+  children: "lava11"
+  children: "lava12"
+  children: "lava13"
+  children: "lava14"
+  children: "lava15"
+  children: "lava2"
+  children: "lava3"
+  children: "lava4"
+  children: "lava5"
+  children: "lava6"
+  children: "lava7"
+  children: "lava8"
+  children: "lava9"
+  data: ""
   position {
     x: 0.0
     y: 0.0
