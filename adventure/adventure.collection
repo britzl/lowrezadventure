@@ -256,8 +256,8 @@ instances {
   id: "slime"
   prototype: "/adventure/enemies/slime.go"
   position {
-    x: 305.0
-    y: -51.0
+    x: 92.0
+    y: 11.0
     z: 0.0
   }
   rotation {

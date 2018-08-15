@@ -2,7 +2,7 @@ local camera = require "orthographic.camera"
 local platypus = require "platypus.platypus"
 local input = require "in.state"
 local input_mapper = require "in.mapper"
-local animator = require "adventure.animator"
+local animator = require "utils.animator"
 local shared = require "adventure.shared"
 local log = require "utils.log"
 

@@ -1,7 +1,7 @@
 local log = require "utils.log"
-local quilt = require "quilt.quilt"
 local stately = require "stately.stately"
-local broadcaster = require "quilt.broadcaster"
+local broadcaster = require "utils.broadcaster"
+local komponent = require "komponent.komponent"
 
 local follow = require "adventure.components.follow"
 local hitbox = require "adventure.components.hitbox"
@@ -39,17 +39,7 @@ function init(self)
 
 	-- create event broadcaster
 	local broadcast = broadcaster.create()
-	local triggers = {
-		WAKEUP = broadcast.create_trigger(events.WAKEUP),
-		HIT = broadcast.create_trigger(events.HIT),
-		DEATH = broadcast.create_trigger(events.DEATH),
-		ALIVE = broadcast.create_trigger(events.ALIVE),
-		MOVE_LEFT = broadcast.create_trigger(events.MOVE_LEFT),
-		MOVE_RIGHT = broadcast.create_trigger(events.MOVE_RIGHT),
-		ATTACK = broadcast.create_trigger(events.ATTACK),
-		ATTACK_DONE = broadcast.create_trigger(events.ATTACK_DONE),
-		DAMAGE = broadcast.create_trigger(events.DAMAGE),
-	}
+	local triggers = broadcast.create_triggers(events)
 
 	-- create components
 	local components = {
@@ -79,13 +69,13 @@ function init(self)
 		damagepushback = damagepushback.create(0.15, 10),
 	}
 
-	-- create quilts (component groups)
-	local quilts = {}
-	quilts[STATE_SLEEP] = quilt.create().add(components.animator, components.activator, components.hitbox, components.health)
-	quilts[STATE_MOVE] = quilt.create().add(components.animator, components.follow, components.hitbox, components.health, components.attack, components.platypus)
-	quilts[STATE_ATTACK] = quilt.create().add(components.animator, components.hitbox, components.health, components.attack)
-	quilts[STATE_DAMAGE] = quilt.create().add(components.animator, components.hitbox, components.health, components.damageblink, components.damagepushback)
-	quilts[STATE_DEAD] = quilt.create().add(components.animator, components.death)
+	-- create komponent groups
+	self.komponent = komponent.create()
+	self.komponent.group(STATE_SLEEP, components.animator, components.activator, components.hitbox, components.health)
+	self.komponent.group(STATE_MOVE, components.animator, components.follow, components.hitbox, components.health, components.attack, components.platypus)
+	self.komponent.group(STATE_ATTACK, components.animator, components.hitbox, components.health, components.attack)
+	self.komponent.group(STATE_DAMAGE, components.animator, components.hitbox, components.health, components.damageblink, components.damagepushback)
+	self.komponent.group(STATE_DEAD, components.animator, components.death)
 
 
 	-- create state machine
@@ -107,28 +97,27 @@ function init(self)
 	fsm.transition(states.DAMAGE, states.MOVE, events.ALIVE)
 
 	fsm.on_state_change(function(from, to)
-		self.quilt = quilts[to]
-		assert(self.quilt, ("No quilt for state %s"):format(to))
+		self.komponent.change_group(to)
 		log("Changing state from", from, "to", to)
 	end)
 
 
 	broadcast.listen(function(id, ...)
 		fsm.handle_event(id, ...)
-		self.quilt.on_event(id, ...)
+		self.komponent.on_event(id, ...)
 	end)
 
 	fsm.start(states.SLEEP)
 end
 
 function final(self)
-	self.quilt.final(self)
+	self.komponent.final()
 end
 
 function update(self, dt)
-	self.quilt.update(self, dt)
+	self.komponent.update(dt)
 end
 
 function on_message(self, message_id, message, sender)
-	self.quilt.on_message(self, message_id, message, sender)
+	self.komponent.on_message(message_id, message, sender)
 end
