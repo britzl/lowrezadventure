@@ -4,7 +4,9 @@ local animations = require "adventure.enemies.animations"
 local M = {}
 
 
-function M.create(attack, attack_distance, attack_delay, attack_speed)
+function M.create(attack, attack_done, attack_distance, attack_delay, attack_speed)
+
+	
 	local instance = {}
 
 	local attacking = false
@@ -27,6 +29,8 @@ function M.create(attack, attack_distance, attack_delay, attack_speed)
 			attack()
 			timer.delay(attack_speed, false, function()
 				attacking = false
+				log("attack done")
+				attack_done()
 				msg.post(attack_direction, "disable")
 			end)
 		end)

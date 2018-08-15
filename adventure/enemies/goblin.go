@@ -1,6 +1,6 @@
 components {
-  id: "enemy"
-  component: "/adventure/enemies/enemy.script"
+  id: "goblin"
+  component: "/adventure/enemies/goblin.script"
   position {
     x: 0.0
     y: 0.0
@@ -271,7 +271,7 @@ embedded_components {
   "  shapes {\n"
   "    shape_type: TYPE_BOX\n"
   "    position {\n"
-  "      x: -6.0\n"
+  "      x: -4.0\n"
   "      y: -2.0\n"
   "      z: 0.0\n"
   "    }\n"
@@ -284,7 +284,7 @@ embedded_components {
   "    index: 0\n"
   "    count: 3\n"
   "  }\n"
-  "  data: 1.0\n"
+  "  data: 4.0\n"
   "  data: 4.0\n"
   "  data: 10.0\n"
   "}\n"
@@ -318,7 +318,7 @@ embedded_components {
   "  shapes {\n"
   "    shape_type: TYPE_BOX\n"
   "    position {\n"
-  "      x: 6.0\n"
+  "      x: 4.0\n"
   "      y: -2.0\n"
   "      z: 0.0\n"
   "    }\n"
@@ -331,7 +331,7 @@ embedded_components {
   "    index: 0\n"
   "    count: 3\n"
   "  }\n"
-  "  data: 1.0\n"
+  "  data: 4.0\n"
   "  data: 4.0\n"
   "  data: 10.0\n"
   "}\n"

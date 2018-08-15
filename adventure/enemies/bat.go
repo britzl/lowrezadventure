@@ -1,23 +1,3 @@
-components {
-  id: "enemy"
-  component: "/adventure/enemies/enemy.script"
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  properties {
-    id: "type"
-    value: "bat"
-    type: PROPERTY_TYPE_HASH
-  }
-}
 embedded_components {
   id: "sprite"
   type: "sprite"

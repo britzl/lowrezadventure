@@ -256,8 +256,8 @@ instances {
   id: "slime"
   prototype: "/adventure/enemies/slime.go"
   position {
-    x: 87.0
-    y: 5.0
+    x: 305.0
+    y: -51.0
     z: 0.0
   }
   rotation {
@@ -275,7 +275,7 @@ instances {
     }
     properties {
       id: "log_enabled"
-      value: "true"
+      value: "false"
       type: PROPERTY_TYPE_BOOLEAN
     }
   }
@@ -465,6 +465,34 @@ instances {
     z: 1.0
   }
 }
+instances {
+  id: "goblin"
+  prototype: "/adventure/enemies/goblin.go"
+  position {
+    x: 121.0
+    y: 6.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "goblin"
+    properties {
+      id: "log_enabled"
+      value: "true"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
 scale_along_z: 0
 embedded_instances {
   id: "map"
@@ -548,6 +576,7 @@ embedded_instances {
 }
 embedded_instances {
   id: "enemies"
+  children: "goblin"
   children: "slime"
   data: ""
   position {

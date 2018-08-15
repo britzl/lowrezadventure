@@ -2,6 +2,7 @@ local M = {}
 
 M.WAKEUP = hash("wakeup")
 M.ATTACK = hash("attack")
+M.ATTACK_DONE = hash("attack_done")
 M.HIT = hash("hit")
 M.DEATH = hash("death")
 M.ALIVE = hash("alive")
