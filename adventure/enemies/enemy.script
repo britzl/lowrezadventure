@@ -1,7 +1,11 @@
 local platypus = require "platypus.platypus"
 local animator = require "adventure.animator"
+local animations = require "adventure.enemies.animations"
 local shared = require "adventure.shared"
 local log = require "utils.log"
+local quilt = require "quilt.quilt"
+local follow = require "adventure.enemies.components.follow"
+local attack = require "adventure.enemies.components.attack"
 
 go.property("awake", false)
 go.property("speed", 20)
@@ -18,16 +22,12 @@ local GROUP_GROUND = hash("ground")
 
 local ATTACK = hash("attack")
 
-local ANIM_WALK = hash("walk")
-local ANIM_IDLE = hash("idle")
-local ANIM_ATTACK = hash("attack")
-
 local TYPES = {
 	[hash("goblin")] = {
 		animations = {
-			[ANIM_IDLE] = hash("goblin_idle"),
-			[ANIM_WALK] = hash("goblin_walk"),
-			[ANIM_ATTACK] = hash("goblin_attack"),
+			[animations.IDLE] = hash("goblin_idle"),
+			[animations.WALK] = hash("goblin_walk"),
+			[animations.ATTACK] = hash("goblin_attack"),
 		},
 		attack = {
 			distance = 12,
@@ -36,9 +36,9 @@ local TYPES = {
 	},
 	[hash("slime")] = {
 		animations = {
-			[ANIM_IDLE] = hash("slime_walk"),
-			[ANIM_WALK] = hash("slime_walk"),
-			[ANIM_ATTACK] = hash("slime_attack"),
+			[animations.IDLE] = hash("slime_walk"),
+			[animations.WALK] = hash("slime_walk"),
+			[animations.ATTACK] = hash("slime_attack"),
 		},
 		attack = {
 			distance = 8,
@@ -47,9 +47,9 @@ local TYPES = {
 	},
 	[hash("bat")] = {
 		animations = {
-			[ANIM_IDLE] = hash("bat_fly"),
-			[ANIM_WALK] = hash("bat_fly"),
-			[ANIM_ATTACK] = hash("bat_attack"),
+			[animations.IDLE] = hash("bat_fly"),
+			[animations.WALK] = hash("bat_fly"),
+			[animations.ATTACK] = hash("bat_attack"),
 		},
 		attack = {
 			distance = 8,
@@ -80,50 +80,20 @@ function init(self)
 	})
 	self.awake = false
 	self.enabled = true
+	self.quilt = quilt.create()
+	self.quilt.add(follow.create())
+	self.quilt.add(attack.create(data.attack.distance, data.attack.speed))
+	self.quilt.init(self)
 end
 
-local function follow(self)
-end
-
-local function swoop(self)
-	local player_pos = go.get_world_position("player")
-	local my_pos = go.get_world_position()
-	local distance = my_pos - player_pos
-	if distance.x > 0 then
-	end
+function final(self)
+	self.quilt.final(self)
 end
 
 
 function update(self, dt)
-	if self.awake and self.enabled and not self.attacking then
-		local player_pos = go.get_world_position("player")
-		local my_pos = go.get_world_position()
-		local distance = my_pos - player_pos
-		if distance.x > 0 then
-			sprite.set_hflip("#sprite", true)
-			self.platypus.left(self.speed)
-			self.animator.play(ANIM_WALK)
-			self.attack_direction = "#attack_left"			
-		elseif distance.x < 0 then
-			sprite.set_hflip("#sprite", false)
-			self.platypus.right(self.speed)
-			self.animator.play(ANIM_WALK)
-			self.attack_direction = "#attack_right"
-		end
-
-		if vmath.length(distance) < self.attack.distance then
-			log("attack")
-			self.attacking = true
-			timer.delay(self.attack.speed, false, function()
-				msg.post(self.attack_direction, "enable")
-				self.animator.play_now(ANIM_ATTACK, function()
-					self.attacking = false
-					msg.post(self.attack_direction, "disable")
-				end)
-			end)
-		end
-	end
 	self.platypus.update(dt)
+	self.quilt.update(self, dt)
 end
 
 local function die(self)
@@ -137,6 +107,7 @@ end
 
 function on_message(self, message_id, message, sender)
 	self.platypus.on_message(message_id, message, sender)
+	self.quilt.on_message(self, message_id, message, sender)
 	if message_id == TRIGGER_RESPONSE then
 		if message.enter then
 			log("awake")

@@ -1,0 +1,133 @@
+local animator = require "adventure.animator"
+local animations = require "adventure.enemies.animations"
+local log = require "utils.log"
+local quilt = require "quilt.quilt"
+local stately = require "stately.stately"
+local broadcaster = require "quilt.broadcaster"
+
+local follow = require "adventure.enemies.components.follow"
+local hitbox = require "adventure.enemies.components.hitbox"
+local health = require "adventure.enemies.components.health"
+local attack = require "adventure.enemies.components.attack"
+local activator = require "adventure.enemies.components.activator"
+local platypus = require "adventure.enemies.components.platypus"
+local animator = require "adventure.enemies.components.animator"
+local death = require "adventure.enemies.components.death"
+local damageblink = require "adventure.enemies.components.damageblink"
+local damagepushback = require "adventure.enemies.components.damagepushback"
+
+local events = require "adventure.enemies.events"
+
+go.property("awake", false)
+go.property("speed", 20)
+go.property("health", 2)
+go.property("log_enabled", false)
+
+local GROUP_GROUND = hash("ground")
+
+local STATE_SLEEP = hash("sleep")
+local STATE_MOVE = hash("move")
+local STATE_ATTACK = hash("attack")
+local STATE_DAMAGE = hash("damage")
+local STATE_DEAD = hash("dead")
+
+
+function init(self)
+	print("log enabled", self.log_enabled)
+	log.set_enabled(self.log_enabled)
+	log("init()")
+
+	self.quilt = nil
+
+	-- create event broadcaster
+	local broadcast = broadcaster.create()
+	local triggers = {
+		WAKEUP = broadcast.create_trigger(events.WAKEUP),
+		HIT = broadcast.create_trigger(events.HIT),
+		DEATH = broadcast.create_trigger(events.DEATH),
+		ALIVE = broadcast.create_trigger(events.ALIVE),
+		MOVE_LEFT = broadcast.create_trigger(events.MOVE_LEFT),
+		MOVE_RIGHT = broadcast.create_trigger(events.MOVE_RIGHT),
+		ATTACK = broadcast.create_trigger(events.ATTACK),
+		DAMAGE = broadcast.create_trigger(events.DAMAGE),
+	}
+	
+	-- create components
+	local components = {
+		activator = activator.create(triggers.WAKEUP, hash("activator")),
+		hitbox = hitbox.create(triggers.HIT, triggers.DEATH, "#hitbox"),
+		health = health.create(triggers.DEATH, triggers.DAMAGE, triggers.ALIVE, self.health),
+		follow = follow.create(triggers.MOVE_LEFT, triggers.MOVE_RIGHT, "player", self.speed),
+		attack = attack.create(triggers.ATTACK, 8, 0.75, 0.75),
+		platypus = platypus.create({
+			collisions = {
+				ground = { GROUP_GROUND },
+				left = 3, right = 4, top = 3, bottom = 5,
+			},
+			gravity = -800,
+			max_velocity = 600,
+			separation = platypus.SEPARATION_SHAPES,
+		}),
+		animator = animator.create("#sprite", {
+			[events.WAKEUP] = hash("slime_walk"),
+			[events.MOVE_LEFT] = hash("slime_walk"),
+			[events.MOVE_RIGHT] = hash("slime_walk"),
+			[events.ATTACK] = hash("slime_attack"),
+			[events.DEATH] = hash("explosion"),
+		}),
+		death = death.create(0.3),
+		damageblink = damageblink.create("#sprite", 0.15),
+		damagepushback = damagepushback.create(0.15, 10),
+	}
+
+	-- create quilts (component groups)
+	local quilts = {}
+	quilts[STATE_SLEEP] = quilt.create().add(components.animator, components.activator, components.hitbox, components.health)
+	quilts[STATE_MOVE] = quilt.create().add(components.animator, components.follow, components.hitbox, components.health, components.attack, components.platypus)
+	quilts[STATE_ATTACK] = quilt.create().add(components.animator, components.hitbox, components.health)
+	quilts[STATE_DAMAGE] = quilt.create().add(components.animator, components.hitbox, components.health, components.damageblink, components.damagepushback)
+	quilts[STATE_DEAD] = quilt.create().add(components.animator, components.death)
+
+	
+	-- create state machine
+	local fsm = stately.create()
+	local states = {
+		SLEEP = fsm.state(STATE_SLEEP),
+		MOVE = fsm.state(STATE_MOVE),
+		ATTACK = fsm.state(STATE_ATTACK),
+		DAMAGE = fsm.state(STATE_DAMAGE),
+		DEAD = fsm.state(STATE_DEAD),
+	}
+	fsm.transition(states.SLEEP, states.MOVE, events.WAKEUP)
+	fsm.transition(states.SLEEP, states.DAMAGE, events.HIT)
+	fsm.transition(states.MOVE, states.DAMAGE, events.HIT)
+	fsm.transition(states.ATTACK, states.DAMAGE, events.HIT)
+	fsm.transition(states.DAMAGE, states.DEAD, events.DEATH)
+	fsm.transition(states.DAMAGE, states.MOVE, events.ALIVE)
+
+	fsm.on_state_change(function(from, to)
+		self.quilt = quilts[to]
+		assert(self.quilt, ("No quilt for state %s"):format(to))
+		log("Changing state from", from, "to", to)
+	end)
+		
+
+	broadcast.listen(function(id, ...)
+		fsm.handle_event(id, ...)
+		self.quilt.on_event(id, ...)
+	end)
+
+	fsm.start(states.SLEEP)
+end
+
+function final(self)
+	self.quilt.final(self)
+end
+
+function update(self, dt)
+	self.quilt.update(self, dt)
+end
+
+function on_message(self, message_id, message, sender)
+	self.quilt.on_message(self, message_id, message, sender)
+end

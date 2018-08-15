@@ -1,3 +1,6 @@
+local log = require "utils.log"
+
+
 local M = {}
 
 
@@ -39,6 +42,9 @@ function M.create(sprite_url, animations, default_animation_id)
 
 	function instance.play_now(animation_id, cb)
 		assert(animations[animation_id], ("Unknown animation id %s"):format(animation_id))
+		if current_animation == animation_id then
+			return
+		end
 		play(animation_id, cb)
 	end
 
