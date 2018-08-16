@@ -587,7 +587,7 @@ instances {
     id: "moving_platform"
     properties {
       id: "direction"
-      value: "128.0, 0.0, 0.0"
+      value: "80.0, 0.0, 0.0"
       type: PROPERTY_TYPE_VECTOR3
     }
     properties {
