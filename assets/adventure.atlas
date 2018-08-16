@@ -88,6 +88,9 @@ animations {
   images {
     image: "/assets/images/goblin8.png"
   }
+  images {
+    image: "/assets/images/goblin5.png"
+  }
   playback: PLAYBACK_ONCE_FORWARD
   fps: 20
   flip_horizontal: 0

@@ -48,6 +48,7 @@ function M.create()
 	function broadcaster.listen(fn)
 		assert(fn, "You must provide a function")
 		listeners[fn] = true
+		return broadcaster
 	end
 
 	--- Remove a previously set listener
@@ -55,6 +56,7 @@ function M.create()
 	function broadcaster.unregister(fn)
 		assert(fn, "You must provide a function")
 		listeners[fn] = nil
+		return broadcaster
 	end
 
 	--- Broadcast an event to all listeners
@@ -69,6 +71,7 @@ function M.create()
 				print(err)
 			end
 		end
+		return broadcaster
 	end
 
 	return setmetatable(broadcaster, {

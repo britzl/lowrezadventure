@@ -1,12 +1,12 @@
-local events = require "adventure.enemies.events"
+local events = require "adventure.events"
 
 local M = {}
 
 local TRIGGER_RESPONSE = hash("trigger_response")
 
---- Trigger an activate function when a trigger is entered
-function M.create(activate, group)
-	assert(activate, "You must provide an activate trigger")
+--- Generate an ACTIVATE event when a trigger is entered
+function M.create(broadcast, group)
+	assert(broadcast, "You must provide a broadcast function")
 	assert(group, "You must provide a collision group")
 
 	local instance = {}
@@ -14,7 +14,7 @@ function M.create(activate, group)
 	function instance.on_message(message_id, message, sender)
 		if message_id == TRIGGER_RESPONSE then
 			if message.own_group == group and message.enter then
-				activate()
+				broadcast(events.ACTIVATE)
 			end
 		end
 	end

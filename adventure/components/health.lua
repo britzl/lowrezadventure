@@ -1,20 +1,21 @@
-local log = require "utils.log"
-local events = require "adventure.enemies.events"
+local events = require "adventure.events"
 
 local M = {}
 
 
-function M.create(die, damage, live, health)
+function M.create(broadcast, health)
+	assert(broadcast, "You must provide a broadcast function")
+	assert(health, "You must provide a health value")
 	local instance = {}
 
 	function instance.on_event(event_id, data)
 		if event_id == events.HIT then
 			health = health - data.amount
 			if health <= 0 then
-				die()
+				broadcast(events.DEATH)
 			else
-				damage(data)
-				live()
+				broadcast(events.DAMAGE, data)
+				broadcast(events.ALIVE)
 			end
 		end
 	end

@@ -8,10 +8,11 @@ end
 function M.create()
 	local instance = {}
 
-
-	local current_group = {}
+	local current_group
 
 	local groups = {}
+
+	local modules = {}
 
 	function instance.group(id, ...)
 		assert(id, "You must provide a group id")
@@ -42,6 +43,7 @@ function M.create()
 		assert(group, "Group doesn't exist")
 
 		for _,module in pairs({...}) do
+			modules[module] = true
 			if module.init then table.insert(group.functions.init, module.init) end
 			if module.final then table.insert(group.functions.final, module.final) end
 			if module.update then table.insert(group.functions.update, module.update) end
@@ -74,7 +76,7 @@ function M.create()
 		assert(group_id, "You must provide a group id")
 		local group = groups[group_id]
 		assert(group, "Group doesn't exist")
-
+		
 		current_group = group
 	end
 
@@ -82,7 +84,6 @@ function M.create()
 	function instance.current_group()
 		return current_group and current_group.id
 	end
-
 
 	local function invoke_functions(fns, ...)
 		for _,fn in ipairs(fns) do
@@ -93,12 +94,27 @@ function M.create()
 		end
 	end
 
+	local function invoke_all_once(name, ...)
+		local invoked = {}
+		for _,group in pairs(groups) do
+			for _,fn in ipairs(group.functions[name]) do
+				if not invoked[fn] then
+					local ok, err = pcall(fn, ...)
+					if not ok then
+						print(err)
+					end
+					invoked[fn] = true
+				end
+			end
+		end
+	end
+
 	function instance.init(...)
-		invoke_functions(current_group.functions.init, ...)
+		invoke_all_once("init")
 	end
 
 	function instance.final(...)
-		invoke_functions(current_group.functions.final, ...)
+		invoke_all_once("final")
 	end
 
 	function instance.update(dt, ...)

@@ -1,9 +1,8 @@
 local log = require "utils.log"
-local stately = require "stately.stately"
 local broadcaster = require "utils.broadcaster"
 local komponent = require "komponent.komponent"
 
-local follow = require "adventure.components.follow"
+local follow_and_attack = require "adventure.components.follow_and_attack"
 local hitbox = require "adventure.components.hitbox"
 local health = require "adventure.components.health"
 local attack = require "adventure.components.attack"
@@ -13,15 +12,16 @@ local animator = require "adventure.components.animator"
 local death = require "adventure.components.death"
 local damageblink = require "adventure.components.damageblink"
 local damagepushback = require "adventure.components.damagepushback"
+local stately = require "adventure.components.stately"
+local soundplayer = require "adventure.components.soundplayer"
 
-local events = require "adventure.enemies.events"
+local events = require "adventure.events"
+local sounds = require "adventure.sounds.sounds"
 
 go.property("awake", false)
 go.property("speed", 20)
 go.property("health", 2)
 go.property("log_enabled", false)
-
-local GROUP_GROUND = hash("ground")
 
 local STATE_SLEEP = hash("sleep")
 local STATE_MOVE = hash("move")
@@ -31,34 +31,29 @@ local STATE_DEAD = hash("dead")
 
 
 function init(self)
-	print("log enabled", self.log_enabled)
 	log.set_enabled(self.log_enabled)
 	log("init()")
 
 	self.quilt = nil
 
-	-- create event broadcaster
+	-- set up component handler and event broadcaster
+	self.komponent = komponent.create()
 	local broadcast = broadcaster.create()
-	local triggers = broadcast.create_triggers(events)
-
+	broadcast.listen(function(id, ...)
+		self.komponent.on_event(id, ...)
+	end)
+	
 	-- create components
 	local components = {
-		activator = activator.create(triggers.WAKEUP, hash("activator")),
-		hitbox = hitbox.create(triggers.HIT, triggers.DEATH, "#hitbox"),
-		health = health.create(triggers.DEATH, triggers.DAMAGE, triggers.ALIVE, self.health),
-		follow = follow.create(triggers.MOVE_LEFT, triggers.MOVE_RIGHT, "player", self.speed),
-		attack = attack.create(triggers.ATTACK, triggers.ATTACK_DONE, 24, 0.75, 0.75),
-		platypus = platypus.create({
-			collisions = {
-				ground = { GROUP_GROUND },
-				left = 3, right = 4, top = 3, bottom = 6,
-			},
-			gravity = -800,
-			max_velocity = 600,
-			separation = platypus.SEPARATION_SHAPES,
+		activator = activator.create(broadcast, hash("activator")),
+		hitbox = hitbox.create(broadcast, "#hitbox"),
+		health = health.create(broadcast, self.health),
+		follow_and_attack = follow_and_attack.create(broadcast, 10, "player", self.speed),
+		attack = attack.create(broadcast, 0.75),
+		platypus = platypus.create(broadcast, {
+			rays = { left = 3, right = 4, top = 3, bottom = 6, }
 		}),
 		animator = animator.create("#sprite", {
-			[events.WAKEUP] = hash("goblin_walk"),
 			[events.MOVE_LEFT] = hash("goblin_walk"),
 			[events.MOVE_RIGHT] = hash("goblin_walk"),
 			[events.ATTACK] = hash("goblin_attack"),
@@ -67,47 +62,29 @@ function init(self)
 		death = death.create(0.2),
 		damageblink = damageblink.create("#sprite", 0.15),
 		damagepushback = damagepushback.create(0.15, 10),
+		stately = stately.create(self.komponent.change_group, STATE_SLEEP, {
+			stately.transition(events.ACTIVATE, STATE_SLEEP, STATE_MOVE),
+			stately.transition(events.ATTACK, STATE_MOVE, STATE_ATTACK),
+			stately.transition(events.ATTACK_DONE, STATE_ATTACK, STATE_MOVE),
+			stately.transition(events.HIT, STATE_SLEEP, STATE_DAMAGE),
+			stately.transition(events.HIT, STATE_MOVE, STATE_DAMAGE),
+			stately.transition(events.HIT, STATE_ATTACK, STATE_DAMAGE),
+			stately.transition(events.DEATH, STATE_DAMAGE, STATE_DEAD),
+			stately.transition(events.ALIVE, STATE_DAMAGE, STATE_MOVE),
+		}),
+		soundplayer = soundplayer.create({
+			[events.ATTACK] = sounds.SWORDSWING,
+		}),
 	}
 
 	-- create komponent groups
-	self.komponent = komponent.create()
-	self.komponent.group(STATE_SLEEP, components.animator, components.activator, components.hitbox, components.health)
-	self.komponent.group(STATE_MOVE, components.animator, components.follow, components.hitbox, components.health, components.attack, components.platypus)
-	self.komponent.group(STATE_ATTACK, components.animator, components.hitbox, components.health, components.attack)
-	self.komponent.group(STATE_DAMAGE, components.animator, components.hitbox, components.health, components.damageblink, components.damagepushback)
-	self.komponent.group(STATE_DEAD, components.animator, components.death)
+	self.komponent.group(STATE_SLEEP, components.stately, components.animator, components.activator, components.hitbox, components.health)
+	self.komponent.group(STATE_MOVE, components.stately, components.animator, components.follow_and_attack, components.hitbox, components.health, components.attack, components.soundplayer, components.platypus)
+	self.komponent.group(STATE_ATTACK, components.stately, components.animator, components.hitbox, components.health, components.attack)
+	self.komponent.group(STATE_DAMAGE, components.stately, components.animator, components.hitbox, components.health, components.damageblink, components.damagepushback, components.death)
+	self.komponent.group(STATE_DEAD, components.stately, components.animator)
 
-
-	-- create state machine
-	local fsm = stately.create()
-	local states = {
-		SLEEP = fsm.state(STATE_SLEEP),
-		MOVE = fsm.state(STATE_MOVE),
-		ATTACK = fsm.state(STATE_ATTACK),
-		DAMAGE = fsm.state(STATE_DAMAGE),
-		DEAD = fsm.state(STATE_DEAD),
-	}
-	fsm.transition(states.SLEEP, states.MOVE, events.WAKEUP)
-	fsm.transition(states.MOVE, states.ATTACK, events.ATTACK)
-	fsm.transition(states.ATTACK, states.MOVE, events.ATTACK_DONE)
-	fsm.transition(states.SLEEP, states.DAMAGE, events.HIT)
-	fsm.transition(states.MOVE, states.DAMAGE, events.HIT)
-	fsm.transition(states.ATTACK, states.DAMAGE, events.HIT)
-	fsm.transition(states.DAMAGE, states.DEAD, events.DEATH)
-	fsm.transition(states.DAMAGE, states.MOVE, events.ALIVE)
-
-	fsm.on_state_change(function(from, to)
-		self.komponent.change_group(to)
-		log("Changing state from", from, "to", to)
-	end)
-
-
-	broadcast.listen(function(id, ...)
-		fsm.handle_event(id, ...)
-		self.komponent.on_event(id, ...)
-	end)
-
-	fsm.start(states.SLEEP)
+	self.komponent.init()
 end
 
 function final(self)

@@ -1,72 +1,94 @@
-local camera = require "orthographic.camera"
-local platypus = require "platypus.platypus"
-local input = require "in.state"
-local input_mapper = require "in.mapper"
-local animator = require "utils.animator"
-local shared = require "adventure.shared"
 local log = require "utils.log"
+local broadcaster = require "utils.broadcaster"
+local komponent = require "komponent.komponent"
 
 
-local CAMERA = hash("/camera")
+local hitbox = require "adventure.components.hitbox"
+local health = require "adventure.components.health"
+local attack = require "adventure.components.attack"
+local platypus = require "adventure.components.platypus"
+local animator = require "adventure.components.animator"
+local damageblink = require "adventure.components.damageblink"
+local damagepushback = require "adventure.components.damagepushback"
+local soundplayer = require "adventure.components.soundplayer"
+local death = require "adventure.components.death"
+local player = require "adventure.components.player"
+local camera = require "adventure.components.camera"
 
-local CONTACT_POINT_RESPONSE = hash("contact_point_response")
+local events = require "adventure.events"
+local sounds = require "adventure.sounds.sounds"
 
-local LEFT = hash("left")
-local RIGHT = hash("right")
-local ATTACK = hash("attack")
-local JUMP = hash("jump")
 
-local DEBUG = hash("debug")
 
-local GROUP_ATTACK = hash("attack")
+local STATE_IDLE = hash("idle")
+local STATE_MOVE = hash("move")
+local STATE_ATTACK = hash("attack")
+local STATE_DAMAGE = hash("damage")
+local STATE_DEAD = hash("dead")
 
-local SPEED_GROUND = 60
-local SPEED_AIR = 60
-local SPEED_JUMP = 220
 
-local ANIM_WALK = hash("walk")
-local ANIM_IDLE = hash("idle")
-local ANIM_ATTACK = hash("attack")
-local ANIM_BLOCK = hash("block")
-
-local function lerp_with_dt(t, dt, v1, v2)
-	return vmath.lerp(1 - math.pow(t, dt), v1, v2)
-end
+go.property("health", 10)
 
 function init(self)
 	log.set_enabled(true)
 
-	go.set_position(go.get_position(), CAMERA)
-	input.acquire()
-	input_mapper.bind(input_mapper.KEY_LEFT, LEFT)
-	input_mapper.bind(input_mapper.KEY_RIGHT, RIGHT)
-	input_mapper.bind(input_mapper.KEY_SPACE, JUMP)
-	input_mapper.bind(input_mapper.KEY_X, ATTACK)
-	input_mapper.bind(input_mapper.KEY_1, DEBUG)
-	self.platypus = platypus.create({
-		collisions = {
-			ground = { hash("ground") },
-			left = 3, right = 4, top = 3, bottom = 5,
-		},
-		--debug = true,
-		gravity = -800,
-		max_velocity = 600
-	})
-	self.animator = animator.create("#sprite", {
-		[ANIM_IDLE] = hash("warrior_idle"),
-		[ANIM_ATTACK] = hash("warrior_attack"),
-		[ANIM_WALK] = hash("warrior_walk"),
-		[ANIM_BLOCK] = hash("warrior_block"),
-	}, ANIM_IDLE)
-	self.camera_offset = vmath.vector3()
-	self.camera_offset_lerp = vmath.vector3()
-	self.attack_direction = "#attack_right"
-	msg.post("#attack_left", "disable")
-	msg.post("#attack_right", "disable")
+	self.komponent = komponent.create()
+	local broadcast = broadcaster.create()
+	broadcast.listen(function(id, ...)
+		self.komponent.on_event(id, ...)
+	end)
+
+	-- create the components used by this enemy
+	local components = {
+		health = health.create(broadcast, self.health),
+		hitbox = hitbox.create(broadcast, "#hitbox"),
+		attack = attack.create(broadcast, 0.25),
+		platypus = platypus.create(broadcast, {
+			rays = { left = 3, right = 4, top = 3, bottom = 5 }
+		}),
+		animator = animator.create("#sprite", {
+			[events.MOVE_LEFT] = hash("warrior_walk"),
+			[events.MOVE_RIGHT] = hash("warrior_walk"),
+			[events.ATTACK] = hash("warrior_attack"),
+			[events.DEATH] = hash("explosion"),
+		}),
+		death = death.create(0.2),
+		damageblink = damageblink.create("#sprite", 0.15),
+		damagepushback = damagepushback.create(0.15, 10),
+		soundplayer = soundplayer.create({
+			[events.ATTACK] = sounds.SWORDSWING,
+			[events.MOVE_LEFT] = sounds.FOOTSTEPS,
+			[events.MOVE_RIGHT] = sounds.FOOTSTEPS,
+			[events.GROUND_CONTACT] = sounds.FOOTSTEPS,
+		}),
+		player = player.create(broadcast),
+		camera = camera.create(),
+	}
+	
+	-- create component groups
+	self.komponent.group(STATE_MOVE,
+		components.player,
+		components.camera,
+		components.animator,
+		components.hitbox,
+		components.soundplayer,
+		components.health,
+		components.attack,
+		components.platypus,
+		components.damageblink,
+		components.damagepushback,
+		components.death)
+			
+	self.komponent.init()
+end
+
+function final(self)
+	self.komponent.final()
 end
 
 function update(self, dt)
-	if input.is_pressed(ATTACK) and not self.attacking then
+	self.komponent.update(dt)
+	--[[if input.is_pressed(ATTACK) and not self.attacking then
 		log("attack")
 		self.attacking = true
 		self.platypus.velocity.x = 0
@@ -96,40 +118,15 @@ function update(self, dt)
 		end
 	end
 	
-	if self.platypus.is_jumping() then
-		self.camera_offset_lerp.y = 6
-	elseif self.platypus.is_falling() then
-		self.camera_offset_lerp.y = -6
-	end
-	
-	self.camera_offset = lerp_with_dt(0.01, dt, self.camera_offset, self.camera_offset_lerp)
-
-	camera.follow(CAMERA, go.get_id(), 0.001, self.camera_offset)
-	self.platypus.update(dt)
+--]]
 end
 
 function on_message(self, message_id, message, sender)
-	self.platypus.on_message(message_id, message, sender)
-	if message_id == CONTACT_POINT_RESPONSE then
-		if message.other_group == GROUP_ATTACK then
-			shared.take_damage(self, message)
-		end
-	end
+	self.komponent.on_message(message_id, message, sender)
 end
 
 function on_input(self, action_id, action)
-	action_id = input_mapper.on_input(action_id)
-	input.on_input(action_id, action)
-	if action_id == JUMP then
-		if action.pressed then
-			self.platypus.jump(SPEED_JUMP, true, true)
-		elseif action.released then
-			self.platypus.abort_jump()
-		end
-	elseif action_id == DEBUG and action.released then
-		self.platypus.toggle_debug()
-		msg.post("@system:", "toggle_physics_debug")
-	end
+	self.komponent.on_input(action_id, action)
 end
 
 function on_reload(self)

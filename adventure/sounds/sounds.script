@@ -1,0 +1,66 @@
+local sounds = require "adventure.sounds.sounds"
+
+local SOUNDS = nil
+
+local function play_ambient_sound()
+	timer.delay(math.random(20, 200) / 10, false, function()
+		msg.post("#", "play", { id = sounds.AMBIENT })
+		play_ambient_sound()
+	end)
+end
+
+
+function init(self)
+	SOUNDS = {
+		[sounds.FOOTSTEPS] = {
+			sounds = {
+				{ url = msg.url("#footsteps1"), duration = 0.5 },
+				{ url = msg.url("#footsteps2"), duration = 0.5 },
+				{ url = msg.url("#footsteps3"), duration = 0.5 },
+				{ url = msg.url("#footsteps4"), duration = 0.5 },
+			},
+			max = 1,
+			current = 0,
+		},
+		[sounds.SWORDSWING] = {
+			sounds = {
+				{ url = msg.url("#sword_swing1"), duration = 0.4 },
+				{ url = msg.url("#sword_swing2"), duration = 0.4 },
+				{ url = msg.url("#sword_swing3"), duration = 0.4 },
+				{ url = msg.url("#sword_swing4"), duration = 0.4 },
+			},
+			max = 1,
+			current = 0,
+		},
+		[sounds.AMBIENT] = {
+			sounds = {
+				{ url = msg.url("#waterdrop1"), duration = 0.4 },
+				{ url = msg.url("#waterdrop2"), duration = 0.4 },
+				{ url = msg.url("#waterdrop3"), duration = 0.4 },
+			},
+			max = 1,
+			current = 0,
+		},
+	}
+	sound.set_group_gain("ambient", 0.2)
+	play_ambient_sound()
+end
+
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("play") then
+		local group_id = message.id
+		local group = SOUNDS[group_id]
+		assert(group, ("Unknown sound group %s"):format(group_id))
+		if group.current == group.max then
+			return
+		end
+		local sound = group.sounds[math.random(1, #group.sounds)]
+		print("playing", sound.url)
+		msg.post(sound.url, "play_sound")
+		group.current = group.current + 1
+		timer.delay(sound.duration, false, function()
+			group.current = group.current - 1
+		end)
+	end
+end

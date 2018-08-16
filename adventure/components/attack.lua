@@ -1,39 +1,39 @@
 local log = require "utils.log"
-local animations = require "adventure.enemies.animations"
+local events = require "adventure.events"
 
 local M = {}
 
 
-function M.create(attack, attack_done, attack_distance, attack_delay, attack_speed)
-
+function M.create(broadcast, attack_speed)
+	assert(broadcast, "You must provide a broadcast function")
+	assert(attack_speed, "You must provide an attack speed")
 	
 	local instance = {}
 
 	local attacking = false
 
-	function instance.update(dt)
-		if attacking then
-			return
-		end
-		local player_pos = go.get_world_position("player")
-		local my_pos = go.get_world_position()
-		local distance = my_pos - player_pos
-		if vmath.length(distance) > attack_distance then
-			return
-		end
-		local attack_direction = (distance.x > 0) and "#attack_left" or "#attack_right"
-		log("attack")
-		attacking = true
-		timer.delay(attack_delay, false, function()
+	function instance.init()
+		msg.post("#attack_left", "disable")
+		msg.post("#attack_right", "disable")
+	end
+
+	function instance.on_event(event_id, data)
+		if event_id == events.ATTACK then
+			if attacking then
+				return
+			end
+
+			local attack_direction = (data.direction < 0) and "#attack_left" or "#attack_right"
+			log("attack", attack_direction)
+			attacking = true
 			msg.post(attack_direction, "enable")
-			attack()
 			timer.delay(attack_speed, false, function()
 				attacking = false
 				log("attack done")
-				attack_done()
+				broadcast(events.ATTACK_DONE)
 				msg.post(attack_direction, "disable")
 			end)
-		end)
+		end
 	end
 
 	return instance

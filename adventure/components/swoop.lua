@@ -1,5 +1,4 @@
 local log = require "utils.log"
-local animations = require "adventure.enemies.animations"
 
 local M = {}
 

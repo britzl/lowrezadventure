@@ -1,4 +1,4 @@
-name: "default"
+name: "level1"
 instances {
   id: "quad"
   prototype: "/lowrezjam/quad.go"
@@ -257,7 +257,7 @@ instances {
   prototype: "/adventure/enemies/slime.go"
   position {
     x: 92.0
-    y: 11.0
+    y: 5.0
     z: 0.0
   }
   rotation {
@@ -483,9 +483,29 @@ instances {
     id: "goblin"
     properties {
       id: "log_enabled"
-      value: "true"
+      value: "false"
       type: PROPERTY_TYPE_BOOLEAN
     }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "sounds"
+  prototype: "/adventure/sounds/sounds.go"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
   }
   scale3 {
     x: 1.0
@@ -636,6 +656,41 @@ embedded_instances {
   children: "lava8"
   children: "lava9"
   data: ""
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+embedded_instances {
+  id: "game"
+  data: "components {\n"
+  "  id: \"game\"\n"
+  "  component: \"/adventure/game.script\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "}\n"
+  ""
   position {
     x: 0.0
     y: 0.0

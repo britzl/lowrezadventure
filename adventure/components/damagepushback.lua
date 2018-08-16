@@ -1,5 +1,5 @@
 local log = require "utils.log"
-local events = require "adventure.enemies.events"
+local events = require "adventure.events"
 
 local M = {}
 

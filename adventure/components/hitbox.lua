@@ -1,5 +1,5 @@
 local log = require "utils.log"
-local events = require "adventure.enemies.events"
+local events = require "adventure.events"
 
 local CONTACT_POINT_RESPONSE = hash("contact_point_response")
 local GROUP_ATTACK = hash("attack")
@@ -8,9 +8,8 @@ local GROUP_DANGER = hash("danger")
 
 local M = {}
 
-function M.create(hit, death, hitbox_url)
-	assert(hit, "You need to provide a hit trigger")
-	assert(death, "You need to provide a death trigger")
+function M.create(broadcast, hitbox_url)
+	assert(broadcast, "You need to provide a broadcast function")
 	assert(hitbox_url, "You must provide a hitbox url")
 
 	local instance = {}
@@ -28,9 +27,9 @@ function M.create(hit, death, hitbox_url)
 	function instance.on_message(message_id, message, sender)
 		if message_id == CONTACT_POINT_RESPONSE then
 			if message.other_group == GROUP_ATTACK then
-				hit({ amount = 1, normal = message.normal })
+				broadcast(events.HIT, { amount = 1, normal = message.normal })
 			elseif message.other_group == GROUP_DANGER then
-				death()
+				broadcast(events.DEATH)
 			end
 		end
 	end
