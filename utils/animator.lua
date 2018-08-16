@@ -8,7 +8,7 @@ function M.create(sprite_url, animations, default_animation_id)
 	assert(sprite_url, "You must provie a sprite url")
 	assert(animations, "You must provide some animations")
 	if default_animation_id then
-		assert(animations[default_animation_id], ("Default animation id %s does not exist"):format(default_animation_id))
+		assert(animations[default_animation_id], ("Default animation id %s does not exist"):format(tostring(default_animation_id)))
 	end
 
 	local instance = {}
@@ -33,7 +33,7 @@ function M.create(sprite_url, animations, default_animation_id)
 	end
 	
 	function instance.play(animation_id, cb)
-		assert(animations[animation_id], ("Unknown animation id %s"):format(animation_id))
+		assert(animations[animation_id], ("Unknown animation id %s"):format(tostring(animation_id)))
 		if current_animation then
 			return
 		end
@@ -41,7 +41,7 @@ function M.create(sprite_url, animations, default_animation_id)
 	end
 
 	function instance.play_now(animation_id, cb)
-		assert(animations[animation_id], ("Unknown animation id %s"):format(animation_id))
+		assert(animations[animation_id], ("Unknown animation id %s"):format(tostring(animation_id)))
 		if current_animation == animation_id then
 			return
 		end
@@ -49,11 +49,11 @@ function M.create(sprite_url, animations, default_animation_id)
 	end
 
 	function instance.play_next(animation_id, cb)
-		assert(animations[animation_id], ("Unknown animation id %s"):format(animation_id))
+		assert(animations[animation_id], ("Unknown animation id %s"):format(tostring(animation_id)))
 		if not current_animation then
 			play(animation_id, cb)
 		else
-			table.insert(animation_queue, { animation_id = animation_id, cb = cb })
+			table.insert(animation_queue, { animation_id = animation_id, cb = cb })
 		end
 	end
 

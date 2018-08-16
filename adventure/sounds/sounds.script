@@ -51,7 +51,7 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("play") then
 		local group_id = message.id
 		local group = SOUNDS[group_id]
-		assert(group, ("Unknown sound group %s"):format(group_id))
+		assert(group, ("Unknown sound group %s"):format(tostring(group_id)))
 		if group.current == group.max then
 			return
 		end
