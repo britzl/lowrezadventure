@@ -1,0 +1,17 @@
+function init(self)
+	self.lives = {
+		gui.get_node("life1"),
+		gui.get_node("life2"),
+		gui.get_node("life3"),
+	}
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("update_lives") then
+		pprint(message)
+		for i=1,#self.lives do
+			local enabled = message.lives >= i
+			gui.set_enabled(self.lives[i], enabled)
+		end
+	end
+end

@@ -18,7 +18,7 @@ function M.create(broadcast, attack_distance, target, speed)
 		local my_pos = go.get_world_position()
 		local direction = my_pos - target_pos
 		if vmath.length(direction) <= attack_distance then
-			broadcast(events.ATTACK, { direction = direction.x > 0 and 1 or -1 })
+			broadcast(events.ATTACK, { direction = direction.x > 0 and -1 or 1 })
 		elseif direction.x > 0 then
 			sprite.set_hflip("#sprite", true)
 			broadcast(events.MOVE_LEFT, move_data)

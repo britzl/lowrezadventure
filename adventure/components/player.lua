@@ -2,6 +2,7 @@ local log = require "utils.log"
 local input = require "in.state"
 local input_mapper = require "in.mapper"
 local events = require "adventure.events"
+local monarch = require "monarch.monarch"
 
 local LEFT = hash("left")
 local RIGHT = hash("right")
@@ -9,6 +10,7 @@ local ATTACK = hash("attack")
 local JUMP = hash("jump")
 local DEBUG = hash("debug")
 
+local TRIGGER_RESPONSE = hash("trigger_response")
 
 local M = {}
 
@@ -37,7 +39,14 @@ function M.create(broadcast)
 	local attack_data = {
 		direction = 0
 	}
-	
+
+	local function game_over(message)
+		broadcast(events.GAME_OVER)
+		input.clear()
+		msg.post("hud", "disable")
+		monarch.show(hash("game_over"), nil, { message = message })
+	end
+		
 	function instance.init()
 		-- acquire input and map input to actions
 		input.acquire()
@@ -59,7 +68,7 @@ function M.create(broadcast)
 				broadcast(events.MOVE_RIGHT, move_data)
 				sprite.set_hflip("#sprite", false)
 			else
-				-- idle
+				broadcast(events.IDLE)
 			end		
 		end
 	end
@@ -85,11 +94,23 @@ function M.create(broadcast)
 		end
 	end
 
+	function instance.on_message(message_id, message, sender)
+		if message_id == TRIGGER_RESPONSE then
+			if message.other_group == hash("goal") then
+				game_over("Yay!\nYou found\na way out!")
+			end
+		end
+	end
+
 	function instance.on_event(event_id, data)
 		if event_id == events.GROUND_CONTACT then
 			move_data.speed = SPEED_GROUND
 		elseif event_id == events.ATTACK_DONE then
 			attacking = false
+		elseif event_id == events.DEATH then
+			game_over("Oh no!\nBetter luck\nnext time!")
+		elseif event_id == events.ALIVE then
+			msg.post("hud", "update_lives", { lives = data.health })
 		end
 	end
 

@@ -14,20 +14,19 @@ local soundplayer = require "adventure.components.soundplayer"
 local death = require "adventure.components.death"
 local player = require "adventure.components.player"
 local camera = require "adventure.components.camera"
+local stately = require "adventure.components.stately"
+
 
 local events = require "adventure.events"
 local sounds = require "adventure.sounds.sounds"
 
 
 
-local STATE_IDLE = hash("idle")
-local STATE_MOVE = hash("move")
-local STATE_ATTACK = hash("attack")
-local STATE_DAMAGE = hash("damage")
-local STATE_DEAD = hash("dead")
+local STATE_ALIVE = hash("alive")
+local STATE_GAME_OVER = hash("game_over")
 
 
-go.property("health", 10)
+go.property("health", 3)
 
 function init(self)
 	log.set_enabled(true)
@@ -47,6 +46,7 @@ function init(self)
 			rays = { left = 3, right = 4, top = 3, bottom = 5 }
 		}),
 		animator = animator.create("#sprite", {
+			[events.IDLE] = hash("warrior_idle"),
 			[events.MOVE_LEFT] = hash("warrior_walk"),
 			[events.MOVE_RIGHT] = hash("warrior_walk"),
 			[events.ATTACK] = hash("warrior_attack"),
@@ -61,12 +61,16 @@ function init(self)
 			[events.MOVE_RIGHT] = sounds.FOOTSTEPS,
 			[events.GROUND_CONTACT] = sounds.FOOTSTEPS,
 		}),
+		stately = stately.create(self.komponent.change_group, STATE_ALIVE, {
+			stately.transition(events.GAME_OVER, STATE_ALIVE, STATE_GAME_OVER),
+		}),
 		player = player.create(broadcast),
 		camera = camera.create(),
 	}
 	
 	-- create component groups
-	self.komponent.group(STATE_MOVE,
+	self.komponent.group(STATE_ALIVE,
+		components.stately,
 		components.player,
 		components.camera,
 		components.animator,
@@ -76,9 +80,10 @@ function init(self)
 		components.attack,
 		components.platypus,
 		components.damageblink,
-		components.damagepushback,
-		components.death)
-			
+		components.damagepushback)
+
+	self.komponent.group(STATE_GAME_OVER)
+					
 	self.komponent.init()
 end
 
@@ -88,37 +93,6 @@ end
 
 function update(self, dt)
 	self.komponent.update(dt)
-	--[[if input.is_pressed(ATTACK) and not self.attacking then
-		log("attack")
-		self.attacking = true
-		self.platypus.velocity.x = 0
-		msg.post(self.attack_direction, "enable")
-		self.animator.play_now(ANIM_ATTACK, function()
-			self.attacking = false
-			msg.post(self.attack_direction, "disable")
-		end)
-	end
-
-	if not self.attacking then
-		local ground_contact = self.platypus.has_ground_contact()
-		if input.is_pressed(LEFT) then
-			self.platypus.left(ground_contact and SPEED_GROUND or SPEED_AIR)
-			self.animator.play(ground_contact and ANIM_WALK or ANIM_BLOCK)
-			sprite.set_hflip("#sprite", true)
-			self.camera_offset_lerp.x = -12
-			self.attack_direction = "#attack_left"
-		elseif input.is_pressed(RIGHT) then
-			self.platypus.right(ground_contact and SPEED_GROUND or SPEED_AIR)
-			self.animator.play(ground_contact and ANIM_WALK or ANIM_BLOCK)
-			sprite.set_hflip("#sprite", false)
-			self.camera_offset_lerp.x = 12
-			self.attack_direction = "#attack_right"
-		else
-			self.animator.play(ground_contact and ANIM_IDLE or ANIM_BLOCK)
-		end
-	end
-	
---]]
 end
 
 function on_message(self, message_id, message, sender)
@@ -127,9 +101,4 @@ end
 
 function on_input(self, action_id, action)
 	self.komponent.on_input(action_id, action)
-end
-
-function on_reload(self)
-    -- Add reload-handling code here
-    -- Remove this function if not needed
 end

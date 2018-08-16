@@ -76,8 +76,8 @@ instances {
   id: "torch1"
   prototype: "/adventure/props/torch.go"
   position {
-    x: 311.0
-    y: -72.0
+    x: 336.0
+    y: -106.0
     z: 0.0
   }
   rotation {
@@ -266,7 +266,7 @@ instances {
   }
 }
 instances {
-  id: "lava"
+  id: "lava16"
   prototype: "/adventure/props/lava.go"
   position {
     x: 680.0
@@ -446,11 +446,11 @@ instances {
   }
 }
 instances {
-  id: "goblin"
+  id: "goblin2"
   prototype: "/adventure/enemies/goblin.go"
   position {
-    x: 121.0
-    y: 6.0
+    x: 307.0
+    y: -106.0
     z: 0.0
   }
   rotation {
@@ -513,12 +513,435 @@ instances {
     z: 1.0
   }
 }
+instances {
+  id: "goblin1"
+  prototype: "/adventure/enemies/goblin.go"
+  position {
+    x: 287.0
+    y: -106.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "goblin"
+    properties {
+      id: "log_enabled"
+      value: "false"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "goblin3"
+  prototype: "/adventure/enemies/goblin.go"
+  position {
+    x: 267.0
+    y: -106.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "goblin"
+    properties {
+      id: "log_enabled"
+      value: "false"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "moving_platform"
+  prototype: "/adventure/props/moving_platform.go"
+  position {
+    x: 650.0
+    y: -110.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "moving_platform"
+    properties {
+      id: "direction"
+      value: "128.0, 0.0, 0.0"
+      type: PROPERTY_TYPE_VECTOR3
+    }
+    properties {
+      id: "duration"
+      value: "6.0"
+      type: PROPERTY_TYPE_NUMBER
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "goblin"
+  prototype: "/adventure/enemies/goblin.go"
+  position {
+    x: 918.0
+    y: -58.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "goblin"
+    properties {
+      id: "log_enabled"
+      value: "false"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "goblin4"
+  prototype: "/adventure/enemies/goblin.go"
+  position {
+    x: 712.0
+    y: 38.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "goblin"
+    properties {
+      id: "log_enabled"
+      value: "false"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "goblin5"
+  prototype: "/adventure/enemies/goblin.go"
+  position {
+    x: 642.0
+    y: 54.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "goblin"
+    properties {
+      id: "log_enabled"
+      value: "false"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "goblin6"
+  prototype: "/adventure/enemies/goblin.go"
+  position {
+    x: 949.0
+    y: 86.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "goblin"
+    properties {
+      id: "log_enabled"
+      value: "false"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "slime1"
+  prototype: "/adventure/enemies/slime.go"
+  position {
+    x: 665.0
+    y: 53.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "slime"
+    properties {
+      id: "speed"
+      value: "20.0"
+      type: PROPERTY_TYPE_NUMBER
+    }
+    properties {
+      id: "log_enabled"
+      value: "false"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "slime2"
+  prototype: "/adventure/enemies/slime.go"
+  position {
+    x: 767.0
+    y: 117.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "slime"
+    properties {
+      id: "speed"
+      value: "20.0"
+      type: PROPERTY_TYPE_NUMBER
+    }
+    properties {
+      id: "log_enabled"
+      value: "false"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "goblin7"
+  prototype: "/adventure/enemies/goblin.go"
+  position {
+    x: 977.0
+    y: 86.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "goblin"
+    properties {
+      id: "log_enabled"
+      value: "false"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "slime3"
+  prototype: "/adventure/enemies/slime.go"
+  position {
+    x: 937.0
+    y: -43.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "slime"
+    properties {
+      id: "speed"
+      value: "20.0"
+      type: PROPERTY_TYPE_NUMBER
+    }
+    properties {
+      id: "log_enabled"
+      value: "false"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "slime4"
+  prototype: "/adventure/enemies/slime.go"
+  position {
+    x: 953.0
+    y: -43.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  component_properties {
+    id: "slime"
+    properties {
+      id: "speed"
+      value: "20.0"
+      type: PROPERTY_TYPE_NUMBER
+    }
+    properties {
+      id: "log_enabled"
+      value: "false"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "torch"
+  prototype: "/adventure/props/torch.go"
+  position {
+    x: 788.0
+    y: -106.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "torch2"
+  prototype: "/adventure/props/torch.go"
+  position {
+    x: 872.0
+    y: 103.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "torch3"
+  prototype: "/adventure/props/torch.go"
+  position {
+    x: 641.0
+    y: 103.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
 scale_along_z: 0
 embedded_instances {
   id: "map"
   children: "enemies"
+  children: "goal"
+  children: "lava"
+  children: "platforms"
   children: "props"
-  children: "terrain"
   data: "components {\n"
   "  id: \"level\"\n"
   "  component: \"/adventure/level.tilemap\"\n"
@@ -582,7 +1005,18 @@ embedded_instances {
 embedded_instances {
   id: "enemies"
   children: "goblin"
+  children: "goblin1"
+  children: "goblin2"
+  children: "goblin3"
+  children: "goblin4"
+  children: "goblin5"
+  children: "goblin6"
+  children: "goblin7"
   children: "slime"
+  children: "slime1"
+  children: "slime2"
+  children: "slime3"
+  children: "slime4"
   data: ""
   position {
     x: 0.0
@@ -603,7 +1037,10 @@ embedded_instances {
 }
 embedded_instances {
   id: "props"
+  children: "torch"
   children: "torch1"
+  children: "torch2"
+  children: "torch3"
   data: ""
   position {
     x: 0.0
@@ -623,8 +1060,7 @@ embedded_instances {
   }
 }
 embedded_instances {
-  id: "terrain"
-  children: "lava"
+  id: "lava"
   children: "lava1"
   children: "lava10"
   children: "lava11"
@@ -632,6 +1068,7 @@ embedded_instances {
   children: "lava13"
   children: "lava14"
   children: "lava15"
+  children: "lava16"
   children: "lava2"
   children: "lava3"
   children: "lava4"
@@ -659,10 +1096,133 @@ embedded_instances {
   }
 }
 embedded_instances {
-  id: "game"
+  id: "adventure"
   data: "components {\n"
-  "  id: \"game\"\n"
-  "  component: \"/adventure/game.script\"\n"
+  "  id: \"adventure\"\n"
+  "  component: \"/adventure/adventure.script\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "}\n"
+  ""
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+embedded_instances {
+  id: "hud"
+  data: "components {\n"
+  "  id: \"hud\"\n"
+  "  component: \"/adventure/hud/hud.gui\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "}\n"
+  ""
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+embedded_instances {
+  id: "platforms"
+  children: "moving_platform"
+  data: ""
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+embedded_instances {
+  id: "goal"
+  data: "embedded_components {\n"
+  "  id: \"collisionobject\"\n"
+  "  type: \"collisionobject\"\n"
+  "  data: \"collision_shape: \\\"\\\"\\n"
+  "type: COLLISION_OBJECT_TYPE_TRIGGER\\n"
+  "mass: 0.0\\n"
+  "friction: 0.1\\n"
+  "restitution: 0.5\\n"
+  "group: \\\"goal\\\"\\n"
+  "mask: \\\"player\\\"\\n"
+  "embedded_collision_shape {\\n"
+  "  shapes {\\n"
+  "    shape_type: TYPE_BOX\\n"
+  "    position {\\n"
+  "      x: 458.0\\n"
+  "      y: 202.0\\n"
+  "      z: 0.0\\n"
+  "    }\\n"
+  "    rotation {\\n"
+  "      x: 0.0\\n"
+  "      y: 0.0\\n"
+  "      z: 0.0\\n"
+  "      w: 1.0\\n"
+  "    }\\n"
+  "    index: 0\\n"
+  "    count: 3\\n"
+  "  }\\n"
+  "  data: 48.0\\n"
+  "  data: 10.0\\n"
+  "  data: 10.0\\n"
+  "}\\n"
+  "linear_damping: 0.0\\n"
+  "angular_damping: 0.0\\n"
+  "locked_rotation: false\\n"
+  "\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

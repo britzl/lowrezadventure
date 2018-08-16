@@ -2,12 +2,12 @@ local monarch = require "monarch.monarch"
 
 function init(self)
 	msg.post(".", "acquire_input_focus")
-	msg.post("#", "show_menu")
+	msg.post("#", "show_intro")
 end
 
 function on_message(self, message_id, message, sender)
-	if message_id == hash("show_menu") then
+	if message_id == hash("show_intro") then
 		msg.post("#music", "play_sound", { gain = 0.1 })
-		monarch.show(hash("menu"))
+		monarch.show(hash("intro"))
 	end
 end

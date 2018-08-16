@@ -1,3 +1,4 @@
+local log = require "utils.log"
 local events = require "adventure.events"
 
 local M = {}
@@ -10,12 +11,13 @@ function M.create(broadcast, health)
 
 	function instance.on_event(event_id, data)
 		if event_id == events.HIT then
+			log("hit")
 			health = health - data.amount
 			if health <= 0 then
 				broadcast(events.DEATH)
 			else
 				broadcast(events.DAMAGE, data)
-				broadcast(events.ALIVE)
+				broadcast(events.ALIVE, { health = health })
 			end
 		end
 	end

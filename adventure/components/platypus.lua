@@ -26,6 +26,7 @@ function M.create(broadcast, config)
 	end
 
 	function instance.on_event(event_id, data)
+		log(event_id)
 		if event_id == events.MOVE_LEFT then
 			p.left(data.speed)
 		elseif event_id == events.MOVE_RIGHT then

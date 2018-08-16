@@ -14,6 +14,8 @@ M.ABORT_JUMP = hash("abort_jump")
 M.GROUND_CONTACT = hash("ground_contact")
 M.WALL_CONTACT = hash("wall_contact")
 M.FALLING = hash("falling")
+M.IDLE = hash("idle")
+M.GAME_OVER = hash("game_over")
 
 M.DEBUG = hash("debug")
 
