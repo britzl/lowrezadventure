@@ -16,6 +16,7 @@ function init(self)
 	self.controls_pred = render.predicate({"controls"})
 
 	self.view = IDENTITY
+	self.projection = LOWREZ_PROJECTION
 
 	-- render target buffer parameters
 	local color_params = {

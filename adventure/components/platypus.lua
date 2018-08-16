@@ -17,7 +17,7 @@ function M.create(broadcast, config)
 			left = config.rays.left, right = config.rays.right, top = config.rays.top, bottom = config.rays.bottom,
 		},
 		gravity = -800,
-		max_velocity = 600,
+		max_velocity = 400,
 		separation = platypus.SEPARATION_SHAPES,
 	})
 

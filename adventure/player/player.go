@@ -17,7 +17,7 @@ embedded_components {
   id: "sprite"
   type: "sprite"
   data: "tile_set: \"/assets/adventure.atlas\"\n"
-  "default_animation: \"warrior_walk\"\n"
+  "default_animation: \"warrior_idle\"\n"
   "material: \"/builtins/materials/sprite.material\"\n"
   "blend_mode: BLEND_MODE_ALPHA\n"
   ""

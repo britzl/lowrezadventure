@@ -1,6 +1,7 @@
 function init(self)
 	math.randomseed(os.time())
 	math.random()
-	msg.post("@render:", "clear_color", { color = vmath.vector4(0.099, 0.067, 0.037, 1.0) })
-	msg.post("/sounds#music", "play_sound", { gain = 0.1 })
+	--msg.post("@render:", "clear_color", { color = vmath.vector4(0.099, 0.067, 0.037, 1.0) })
+	--msg.post("@render:", "clear_color", { color = vmath.vector4(0.099 * 0.8, 0.067 * 0.8, 0.037 * 0.8, 1.0) })
+	msg.post("@render:", "clear_color", { color = vmath.vector4(0.3, 0.4, 0.8, 1.0) })
 end

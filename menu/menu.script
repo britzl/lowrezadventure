@@ -1,0 +1,50 @@
+local async = require "ludobits.m.async"
+local monarch = require "monarch.monarch"
+
+function init(self)
+	msg.post("@render:", "clear_color", { color = vmath.vector4(0.3, 0.4, 0.8, 1.0) })
+	msg.post(".", "acquire_input_focus")
+	msg.post("player#surprise", "disable")
+end
+
+function update(self, dt)
+	--print(go.get_position("camera"))
+end
+
+
+local function start_game()
+	local ok, err = coroutine.wrap(function()
+		async.go_animate("instructions", "position.y", go.PLAYBACK_ONCE_FORWARD, 300, go.EASING_INOUTQUAD, 0.5, 0)
+		go.delete("instructions")
+		msg.post("player#sprite", "play_animation", { id = hash("warrior_walk_loop") })
+		msg.post("menucamera", "follow", { target = go.get_id("player"), lerp = 0.1 })
+		local to = go.get_position("player") + vmath.vector3(22, 0, 0)
+		async.go_animate("player", "position", go.PLAYBACK_ONCE_FORWARD, to, go.EASING_INQUAD, 1.5, 0)
+		msg.post("player#sprite", "play_animation", { id = hash("warrior_idle") })
+		async.delay(0.5)
+		msg.post("player#surprise", "enable")
+		async.delay(1)
+		monarch.show(hash("adventure"))
+	end)()
+	if not ok then
+		print(err)
+	end
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch") then
+		if action.pressed then
+			msg.post(".", "release_input_focus")
+
+			monarch.preload(hash("adventure"), function()
+				msg.post("menu:/menu", "start_game")
+			end)
+		end
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("start_game") then
+		start_game()
+	end
+end

@@ -34,26 +34,6 @@ embedded_components {
   }
 }
 embedded_components {
-  id: "music"
-  type: "sound"
-  data: "sound: \"/assets/sounds/below.ogg\"\n"
-  "looping: 1\n"
-  "group: \"music\"\n"
-  "gain: 1.0\n"
-  ""
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-}
-embedded_components {
   id: "sword_swing4"
   type: "sound"
   data: "sound: \"/assets/sounds/sword swing_04.wav\"\n"
@@ -119,7 +99,7 @@ embedded_components {
   data: "sound: \"/assets/sounds/footstep_01.wav\"\n"
   "looping: 0\n"
   "group: \"sfx\"\n"
-  "gain: 1.0\n"
+  "gain: 0.6\n"
   ""
   position {
     x: 0.0
@@ -139,7 +119,7 @@ embedded_components {
   data: "sound: \"/assets/sounds/footstep_04.wav\"\n"
   "looping: 0\n"
   "group: \"sfx\"\n"
-  "gain: 1.0\n"
+  "gain: 0.6\n"
   ""
   position {
     x: 0.0
@@ -159,7 +139,7 @@ embedded_components {
   data: "sound: \"/assets/sounds/footstep_02.wav\"\n"
   "looping: 0\n"
   "group: \"sfx\"\n"
-  "gain: 1.0\n"
+  "gain: 0.6\n"
   ""
   position {
     x: 0.0
@@ -179,7 +159,7 @@ embedded_components {
   data: "sound: \"/assets/sounds/footstep_03.wav\"\n"
   "looping: 0\n"
   "group: \"sfx\"\n"
-  "gain: 1.0\n"
+  "gain: 0.6\n"
   ""
   position {
     x: 0.0

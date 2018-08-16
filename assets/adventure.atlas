@@ -246,6 +246,25 @@ animations {
   flip_horizontal: 0
   flip_vertical: 0
 }
+animations {
+  id: "warrior_walk_loop"
+  images {
+    image: "/assets/images/warrior1.png"
+  }
+  images {
+    image: "/assets/images/warrior2.png"
+  }
+  images {
+    image: "/assets/images/warrior3.png"
+  }
+  images {
+    image: "/assets/images/warrior4.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+  flip_horizontal: 0
+  flip_vertical: 0
+}
 margin: 0
 extrude_borders: 0
 inner_padding: 0

@@ -13,7 +13,7 @@ local DEBUG = hash("debug")
 local M = {}
 
 local SPEED_GROUND = 60
-local SPEED_AIR = 40
+local SPEED_AIR = 60
 local SPEED_JUMP = 220
 
 
