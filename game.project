@@ -39,3 +39,6 @@ subpixels = 0
 [library]
 include_dirs = lowrezjam
 
+[html5]
+htmlfile = /index.html
+

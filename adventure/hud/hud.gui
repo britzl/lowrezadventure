@@ -172,5 +172,5 @@ nodes {
   size_mode: SIZE_MODE_AUTO
 }
 material: "/builtins/materials/gui.material"
-adjust_reference: ADJUST_REFERENCE_PARENT
+adjust_reference: ADJUST_REFERENCE_DISABLED
 max_nodes: 512

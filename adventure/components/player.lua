@@ -28,8 +28,8 @@ function M.create(broadcast)
 
 	local jump_data = {
 		speed = SPEED_JUMP,
-		allow_double_jump = true,
-		allow_wall_jump = true,
+		allow_double_jump = false,
+		allow_wall_jump = false,
 	}
 
 	local move_data = {
